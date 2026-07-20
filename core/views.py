@@ -3,7 +3,7 @@ from portfolio.models import PersonalInfo, Skill, Project, ContactMessage
 
 def home_view(request):
     """
-    Renders the Django backend landing page at root URL http://localhost:8000/
+    Renders the Django backend landing page at root URL
     """
     personal = PersonalInfo.objects.first()
     personal_count = PersonalInfo.objects.count()
@@ -19,3 +19,9 @@ def home_view(request):
         'message_count': message_count,
     }
     return render(request, 'index.html', context)
+
+def custom_404_view(request, exception=None):
+    """
+    Custom 404 handler for non-existent backend URLs.
+    """
+    return render(request, '404.html', status=404)
