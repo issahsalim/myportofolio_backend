@@ -2,7 +2,7 @@ import logging
 import threading
 from django.core.mail import send_mail
 from django.conf import settings
-from rest_framework import viewsets, mixins
+from rest_framework import viewsets, mixins, status
 from rest_framework.response import Response
 from .models import PersonalInfo, Skill, Project, ContactMessage
 from .serializers import PersonalInfoSerializer, SkillSerializer, ProjectSerializer, ContactMessageSerializer
@@ -94,6 +94,22 @@ class ContactMessageViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
     """
     queryset = ContactMessage.objects.all()
     serializer_class = ContactMessageSerializer
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            self.perform_create(serializer)
+            headers = self.get_success_headers(serializer.data)
+            return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+        except Exception as e:
+            logger.error(f"Error saving contact message: {e}", exc_info=True)
+            return Response(
+                {"detail": f"Message processing error: {str(e)}"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
     def perform_create(self, serializer):
         instance = serializer.save()
