@@ -14,15 +14,19 @@ from portfolio.models import PersonalInfo, Skill, Project
 def seed():
     print("Seeding database...")
     
-    # 1. Ensure Superuser admin with password adminpass exists
-    user, created = User.objects.get_or_create(username="admin")
-    user.set_password("adminpass")
-    user.email = "issah.boresa.stu@uenr.edu.gh"
-    user.is_staff = True
-    user.is_superuser = True
-    user.save()
-    print("Superuser 'admin' password set to 'adminpass'")
+    # 1. Create/Update Superuser only if ADMIN_PASSWORD environment variable is defined
+    admin_user = os.environ.get("ADMIN_USERNAME", "admin")
+    admin_email = os.environ.get("ADMIN_EMAIL", "issah.boresa.stu@uenr.edu.gh")
+    admin_pass = os.environ.get("ADMIN_PASSWORD")
 
+    if admin_pass:
+        user, created = User.objects.get_or_create(username=admin_user)
+        user.set_password(admin_pass)
+        user.email = admin_email
+        user.is_staff = True
+        user.is_superuser = True
+        user.save()
+        print(f"Superuser '{admin_user}' updated safely from environment variables.")
 
     # Setup Media Files
     base_dir = os.path.dirname(os.path.abspath(__file__))
@@ -43,11 +47,15 @@ def seed():
         dst_photo = os.path.join(profile_dir, "boresa.jpeg")
         shutil.copy(src_photo, dst_photo)
         dst_photo_rel = "profile/boresa.jpeg"
+    elif os.path.exists(os.path.join(profile_dir, "boresa.jpeg")):
+        dst_photo_rel = "profile/boresa.jpeg"
 
     dst_cv_rel = ""
     if os.path.exists(src_cv):
         dst_cv = os.path.join(resumes_dir, "IssahSalim_CV.pdf")
         shutil.copy(src_cv, dst_cv)
+        dst_cv_rel = "resumes/IssahSalim_CV.pdf"
+    elif os.path.exists(os.path.join(resumes_dir, "IssahSalim_CV.pdf")):
         dst_cv_rel = "resumes/IssahSalim_CV.pdf"
 
     # 2. Seed Personal Info
