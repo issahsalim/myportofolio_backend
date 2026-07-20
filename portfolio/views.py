@@ -2,7 +2,9 @@ import logging
 import threading
 from django.core.mail import send_mail
 from django.conf import settings
-from rest_framework import viewsets, mixins, status
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
+from rest_framework import viewsets, mixins, status, permissions
 from rest_framework.response import Response
 from .models import PersonalInfo, Skill, Project, ContactMessage
 from .serializers import PersonalInfoSerializer, SkillSerializer, ProjectSerializer, ContactMessageSerializer
@@ -62,6 +64,7 @@ class PersonalInfoViewSet(viewsets.ReadOnlyModelViewSet):
     """
     queryset = PersonalInfo.objects.all()
     serializer_class = PersonalInfoSerializer
+    permission_classes = [permissions.AllowAny]
 
     def list(self, request, *args, **kwargs):
         instance = self.queryset.first()
@@ -77,6 +80,7 @@ class SkillViewSet(viewsets.ReadOnlyModelViewSet):
     """
     queryset = Skill.objects.all()
     serializer_class = SkillSerializer
+    permission_classes = [permissions.AllowAny]
 
 class ProjectViewSet(viewsets.ReadOnlyModelViewSet):
     """
@@ -85,15 +89,19 @@ class ProjectViewSet(viewsets.ReadOnlyModelViewSet):
     """
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
+    permission_classes = [permissions.AllowAny]
 
+@method_decorator(csrf_exempt, name='dispatch')
 class ContactMessageViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
     """
     Allows guest users to post message submissions.
-    Dispatches emails asynchronously in background thread so HTTP response returns instantly.
+    Bypasses CSRF checking and dispatches emails asynchronously in background thread so HTTP response returns instantly.
     Time Complexity: O(1) for database insert.
     """
     queryset = ContactMessage.objects.all()
     serializer_class = ContactMessageSerializer
+    permission_classes = [permissions.AllowAny]
+    authentication_classes = []
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
