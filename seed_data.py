@@ -14,10 +14,15 @@ from portfolio.models import PersonalInfo, Skill, Project
 def seed():
     print("Seeding database...")
     
-    # 1. Create Superuser if not exists
-    if not User.objects.filter(username="admin").exists():
-        User.objects.create_superuser("admin", "issah.boresa.stu@uenr.edu.gh", "adminpass")
-        print("Created superuser 'admin' with password 'adminpass'")
+    # 1. Ensure Superuser admin with password adminpass exists
+    user, created = User.objects.get_or_create(username="admin")
+    user.set_password("adminpass")
+    user.email = "issah.boresa.stu@uenr.edu.gh"
+    user.is_staff = True
+    user.is_superuser = True
+    user.save()
+    print("Superuser 'admin' password set to 'adminpass'")
+
 
     # Setup Media Files
     base_dir = os.path.dirname(os.path.abspath(__file__))
