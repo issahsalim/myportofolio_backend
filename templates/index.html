@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Issah Boresa | Django Backend API Engine</title>
+  <link rel="icon" type="image/jpeg" href="/media/profile/boresa.jpeg">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    font-mono { font-family: 'JetBrains Mono', monospace; }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col justify-between relative overflow-x-hidden selection:bg-cyan-500 selection:text-slate-950">
+
+  <!-- Glow Background Accents -->
+  <div class="fixed top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[350px] bg-gradient-to-tr from-cyan-500/20 via-indigo-500/15 to-purple-600/10 blur-[130px] rounded-full pointer-events-none"></div>
+
+  <!-- Header -->
+  <header class="border-b border-slate-800/80 bg-slate-950/80 backdrop-blur-md sticky top-0 z-50">
+    <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        {% if personal.profile_image %}
+          <img src="{{ personal.profile_image.url }}" alt="{{ personal.name }}" class="w-10 h-10 rounded-xl object-cover border-2 border-cyan-500/40 shadow-lg shadow-cyan-500/20">
+        {% else %}
+          <img src="/media/profile/boresa.jpeg" alt="Issah Boresa" class="w-10 h-10 rounded-xl object-cover border-2 border-cyan-500/40 shadow-lg shadow-cyan-500/20">
+        {% endif %}
+        <div>
+          <h1 class="text-base font-extrabold text-white tracking-tight">ISSAH BORESA BACKEND</h1>
+          <p class="text-[11px] text-cyan-400 font-mono">Django v6.0 REST Core &bull; Port 8000</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <a href="http://localhost:3000" target="_blank" class="px-4 py-2 text-xs font-semibold text-slate-300 bg-slate-900 border border-slate-800 rounded-xl hover:border-cyan-500 hover:text-white transition-all">
+          &larr; Frontend Site (3000)
+        </a>
+        <a href="/admin/" class="px-4 py-2 text-xs font-semibold text-white bg-gradient-to-r from-cyan-500 to-indigo-600 rounded-xl shadow-lg shadow-cyan-500/20 hover:scale-105 transition-all">
+          Django Admin &rarr;
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Main Content -->
+  <main class="max-w-6xl mx-auto px-6 py-16 flex-grow relative z-10 w-full">
+    
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+      <div class="lg:col-span-8 space-y-4">
+        <!-- Status Badge -->
+        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900 border border-slate-800 text-xs text-slate-300">
+          <span class="flex h-2 w-2 relative">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+          </span>
+          <span class="font-mono text-emerald-400 font-semibold">API Server Active & Online</span>
+          <span class="text-slate-600">|</span>
+          <span class="text-slate-400 font-mono">CORS Allowed: localhost:3000</span>
+        </div>
+
+        <h2 class="text-4xl sm:text-5xl font-extrabold text-white tracking-tight leading-tight">
+          Portfolio Backend <br>
+          <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-indigo-300 to-purple-400">
+            API Engine & Control Center
+          </span>
+        </h2>
+
+        <p class="text-slate-400 text-base max-w-2xl leading-relaxed">
+          Welcome to the Django backend server powering Issah Abdulsalim Boresa's 3D animated portfolio. Use the admin panel below to update skills, add projects, or edit personal details.
+        </p>
+      </div>
+
+      <!-- Profile Photo Frame -->
+      <div class="lg:col-span-4 flex justify-center">
+        <div class="relative w-48 h-48 sm:w-56 sm:h-56 rounded-3xl overflow-hidden border-2 border-cyan-500/40 shadow-2xl shadow-cyan-500/20 group">
+          {% if personal.profile_image %}
+            <img src="{{ personal.profile_image.url }}" alt="{{ personal.name }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+          {% else %}
+            <img src="/media/profile/boresa.jpeg" alt="Issah Abdulsalim Boresa" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+          {% endif %}
+          <div class="absolute bottom-0 inset-x-0 bg-slate-950/80 backdrop-blur-md p-2 text-center">
+            <p class="text-xs font-bold text-white">Issah A. Boresa</p>
+            <p class="text-[10px] text-cyan-400 font-mono">Full-Stack & AI</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Live Record Counters -->
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-12">
+      <div class="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-5 backdrop-blur-md">
+        <p class="text-xs font-mono text-slate-400 uppercase">PROFILE RECORD</p>
+        <p class="text-3xl font-extrabold text-white font-mono mt-1">{{ personal_count }}</p>
+        <p class="text-[11px] text-cyan-400 mt-1">PersonalInfo Entry</p>
+      </div>
+
+      <div class="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-5 backdrop-blur-md">
+        <p class="text-xs font-mono text-slate-400 uppercase">SKILLS SEEDED</p>
+        <p class="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-indigo-300 font-mono mt-1">{{ skill_count }}</p>
+        <p class="text-[11px] text-indigo-400 mt-1">Categorized Skills</p>
+      </div>
+
+      <div class="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-5 backdrop-blur-md">
+        <p class="text-xs font-mono text-slate-400 uppercase">SHIPPED PROJECTS</p>
+        <p class="text-3xl font-extrabold text-white font-mono mt-1">{{ project_count }}</p>
+        <p class="text-[11px] text-purple-400 mt-1">Featured Works</p>
+      </div>
+
+      <div class="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-5 backdrop-blur-md">
+        <p class="text-xs font-mono text-slate-400 uppercase">MESSAGES RECEIVED</p>
+        <p class="text-3xl font-extrabold text-emerald-400 font-mono mt-1">{{ message_count }}</p>
+        <p class="text-[11px] text-emerald-400 mt-1">Guest Inquiries</p>
+      </div>
+    </div>
+
+    <!-- Active REST API Endpoints -->
+    <div class="mt-12">
+      <h3 class="text-xl font-bold text-white mb-4">Exposed REST API Endpoints</h3>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        
+        <a href="/api/personal/" target="_blank" class="bg-slate-900/50 border border-slate-800 hover:border-cyan-500/50 rounded-2xl p-5 flex items-center justify-between group transition-all">
+          <div>
+            <span class="text-[10px] font-mono text-emerald-400 font-bold bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">GET</span>
+            <p class="text-sm font-mono font-bold text-white group-hover:text-cyan-300 mt-2">/api/personal/</p>
+            <p class="text-xs text-slate-400 mt-0.5">Fetches personal bio, role, contact info, and CV links.</p>
+          </div>
+          <span class="text-xs font-mono text-cyan-400 group-hover:translate-x-1 transition-transform">&rarr;</span>
+        </a>
+
+        <a href="/api/skills/" target="_blank" class="bg-slate-900/50 border border-slate-800 hover:border-cyan-500/50 rounded-2xl p-5 flex items-center justify-between group transition-all">
+          <div>
+            <span class="text-[10px] font-mono text-emerald-400 font-bold bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">GET</span>
+            <p class="text-sm font-mono font-bold text-white group-hover:text-cyan-300 mt-2">/api/skills/</p>
+            <p class="text-xs text-slate-400 mt-0.5">Returns array of technical skills with level percentages.</p>
+          </div>
+          <span class="text-xs font-mono text-cyan-400 group-hover:translate-x-1 transition-transform">&rarr;</span>
+        </a>
+
+        <a href="/api/projects/" target="_blank" class="bg-slate-900/50 border border-slate-800 hover:border-cyan-500/50 rounded-2xl p-5 flex items-center justify-between group transition-all">
+          <div>
+            <span class="text-[10px] font-mono text-emerald-400 font-bold bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">GET</span>
+            <p class="text-sm font-mono font-bold text-white group-hover:text-cyan-300 mt-2">/api/projects/</p>
+            <p class="text-xs text-slate-400 mt-0.5">Lists all shipped portfolio projects & tech stack arrays.</p>
+          </div>
+          <span class="text-xs font-mono text-cyan-400 group-hover:translate-x-1 transition-transform">&rarr;</span>
+        </a>
+
+        <div class="bg-slate-900/50 border border-slate-800 rounded-2xl p-5 flex items-center justify-between">
+          <div>
+            <span class="text-[10px] font-mono text-indigo-400 font-bold bg-indigo-500/10 px-2 py-0.5 rounded border border-indigo-500/20">POST</span>
+            <p class="text-sm font-mono font-bold text-white mt-2">/api/contact/</p>
+            <p class="text-xs text-slate-400 mt-0.5">Receives direct contact form submissions from visitors.</p>
+          </div>
+          <span class="text-xs font-mono text-slate-500">WRITE ONLY</span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Quick Management Callout -->
+    <div class="mt-12 bg-gradient-to-r from-slate-900 via-slate-900 to-slate-950 border border-cyan-500/30 rounded-3xl p-8 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-2xl">
+      <div>
+        <h4 class="text-xl font-extrabold text-white">Update Portfolio Content</h4>
+        <p class="text-sm text-slate-300 mt-1">Access the Django Admin Dashboard to update your profile photo, CV resume, skills, or projects.</p>
+      </div>
+      <a href="/admin/" class="px-6 py-3.5 rounded-xl font-bold text-sm text-white bg-gradient-to-r from-cyan-500 to-indigo-600 shadow-lg shadow-cyan-500/25 hover:scale-105 transition-all whitespace-nowrap">
+        Log In To Admin Panel &rarr;
+      </a>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-slate-800/80 bg-slate-950 py-6 text-center text-xs text-slate-500 font-mono">
+    <p>&copy; {% now "Y" %} Issah Abdulsalim Boresa &bull; Django REST Framework Engine</p>
+  </footer>
+
+</body>
+</html>
