@@ -123,7 +123,8 @@ def submit_testimonial_view(request):
     Renders and handles submission for the client testimonial form.
     Clients access this page on the backend project.
     """
-    context = {}
+    personal_info = PersonalInfo.objects.first()
+    context = {'personal_info': personal_info}
 
     if request.method == 'POST':
         name = request.POST.get('name', '').strip()

@@ -61,21 +61,40 @@
             margin-bottom: 2rem;
         }
 
-        .avatar-badge {
-            width: 64px;
-            height: 64px;
-            background: linear-gradient(135deg, #6366f1, #8b5cf6);
-            border-radius: 50%;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 1rem;
-            box-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
+        .profile-avatar-wrapper {
+            position: relative;
+            width: 88px;
+            height: 88px;
+            margin: 0 auto 1rem auto;
         }
 
-        .avatar-badge svg {
-            width: 32px;
-            height: 32px;
+        .profile-avatar-img {
+            width: 88px;
+            height: 88px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--accent-glow);
+            box-shadow: 0 0 25px rgba(139, 92, 246, 0.45);
+        }
+
+        .profile-badge-icon {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 26px;
+            height: 26px;
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            border-radius: 50%;
+            border: 2px solid #0f172a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .profile-badge-icon svg {
+            width: 14px;
+            height: 14px;
             fill: white;
         }
 
@@ -343,10 +362,15 @@
 <body>
     <div class="container">
         <div class="header">
-            <div class="avatar-badge">
-                <svg viewBox="0 0 24 24">
-                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-                </svg>
+            <div class="profile-avatar-wrapper">
+                {% if personal_info and personal_info.profile_image %}
+                    <img src="{{ personal_info.profile_image.url }}" alt="{{ personal_info.name }}" class="profile-avatar-img">
+                {% else %}
+                    <img src="/media/profile/boresa.jpeg" alt="Issah Abdulsalim Boresa" class="profile-avatar-img">
+                {% endif %}
+                <div class="profile-badge-icon" title="Verified Developer">
+                    <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                </div>
             </div>
             <h1>Share Your Feedback</h1>
             <p>Thank you for working with me! Your comments help shape my craft and inspire future projects.</p>
