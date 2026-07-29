@@ -159,6 +159,7 @@ def submit_testimonial_view(request):
                 daemon=True
             ).start()
 
+            context['is_success'] = True
             context['success_message'] = "Your feedback has been submitted successfully and is pending review. Thank you for your support!"
 
     return render(request, 'testimonial_form.html', context)

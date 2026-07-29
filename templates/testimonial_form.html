@@ -298,12 +298,29 @@
             transition: all 0.3s ease;
             box-shadow: 0 10px 20px -5px rgba(99, 102, 241, 0.4);
             margin-top: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .submit-btn:hover {
+        .submit-btn:hover:not(:disabled) {
             transform: translateY(-2px);
             box-shadow: 0 15px 25px -5px rgba(99, 102, 241, 0.5);
             background: linear-gradient(135deg, #4f46e5, #7c3aed);
+        }
+
+        .btn-spinner {
+            width: 20px;
+            height: 20px;
+            animation: spin 0.8s linear infinite;
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 0.6rem;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
 
         .footer-text {
@@ -357,22 +374,22 @@
             </div>
         {% endif %}
 
-        <form method="POST" enctype="multipart/form-data">
+        <form id="feedback-form" method="POST" enctype="multipart/form-data" onsubmit="showLoadingState(this)">
             {% csrf_token %}
 
             <div class="form-group">
                 <label class="form-label" for="name">Your Name *</label>
-                <input type="text" id="name" name="name" class="form-control" placeholder="e.g. Sarah Jenkins" required value="{{ request.POST.name|default:'' }}">
+                <input type="text" id="name" name="name" class="form-control" placeholder="e.g. Sarah Jenkins" required value="{% if not is_success %}{{ request.POST.name|default:'' }}{% endif %}">
             </div>
 
             <div class="form-group">
                 <label class="form-label" for="title">Title or Role / Company *</label>
-                <input type="text" id="title" name="title" class="form-control" placeholder="e.g. CEO at TechCorp / Lead Designer" required value="{{ request.POST.title|default:'' }}">
+                <input type="text" id="title" name="title" class="form-control" placeholder="e.g. CEO at TechCorp / Lead Designer" required value="{% if not is_success %}{{ request.POST.title|default:'' }}{% endif %}">
             </div>
 
             <div class="form-group">
                 <label class="form-label" for="email">Email Address <span class="optional">(Optional - to receive a thank you note)</span></label>
-                <input type="email" id="email" name="email" class="form-control" placeholder="e.g. sarah@example.com" value="{{ request.POST.email|default:'' }}">
+                <input type="email" id="email" name="email" class="form-control" placeholder="e.g. sarah@example.com" value="{% if not is_success %}{{ request.POST.email|default:'' }}{% endif %}">
             </div>
 
             <!-- Star Rating Selection -->
@@ -420,10 +437,12 @@
 
             <div class="form-group">
                 <label class="form-label" for="comment">Your Feedback / Testimonial *</label>
-                <textarea id="comment" name="comment" class="form-control" placeholder="Describe your experience working with Issah Abdulsalim Boresa..." required>{{ request.POST.comment|default:'' }}</textarea>
+                <textarea id="comment" name="comment" class="form-control" placeholder="Describe your experience working with Issah Abdulsalim Boresa..." required>{% if not is_success %}{{ request.POST.comment|default:'' }}{% endif %}</textarea>
             </div>
 
-            <button type="submit" class="submit-btn">Submit Feedback</button>
+            <button type="submit" id="submit-btn" class="submit-btn">
+                <span id="btn-text">Submit Feedback</span>
+            </button>
         </form>
 
         <div class="footer-text">
@@ -488,6 +507,36 @@
                 label.innerHTML = '<span>Click to browse</span> or drag & drop your headshot image';
             }
         }
+
+        function showLoadingState(form) {
+            const btn = document.getElementById('submit-btn');
+            const btnText = document.getElementById('btn-text');
+
+            if (btn && btnText) {
+                btn.disabled = true;
+                btn.style.opacity = '0.75';
+                btn.style.cursor = 'not-allowed';
+                btnText.innerHTML = `
+                    <svg class="btn-spinner" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" style="opacity: 0.25;"></circle>
+                        <path fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" style="opacity: 0.85;"></path>
+                    </svg>
+                    Submitting Feedback...
+                `;
+            }
+        }
+
+        {% if is_success %}
+        document.addEventListener("DOMContentLoaded", function() {
+            const form = document.getElementById('feedback-form');
+            if (form) form.reset();
+            const previewContainer = document.getElementById('image-preview-container');
+            if (previewContainer) previewContainer.style.display = 'none';
+            const fileLabel = document.getElementById('file-label');
+            if (fileLabel) fileLabel.innerHTML = '<span>Click to browse</span> or drag & drop your headshot image';
+            setRating(5);
+        });
+        {% endif %}
     </script>
 </body>
 </html>
