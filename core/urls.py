@@ -3,12 +3,14 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from .views import home_view, custom_404_view
+from portfolio.views import submit_testimonial_view
 
 # Custom 404 handler
 handler404 = custom_404_view
 
 urlpatterns = [
     path('', home_view, name='home'),
+    path('submit-feedback/', submit_testimonial_view, name='submit-testimonial'),
     path('admin/', admin.site.urls),
     path('api/', include('portfolio.urls')),
 ]
@@ -16,3 +18,4 @@ urlpatterns = [
 # Serve media & static files in production
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+

@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit Client Feedback | Issah Abdulsalim Boresa</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --card-border: rgba(255, 255, 255, 0.1);
+            --accent-glow: #8b5cf6;
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --input-bg: rgba(15, 23, 42, 0.6);
+            --input-border: rgba(148, 163, 184, 0.2);
+            --success-bg: rgba(34, 197, 94, 0.15);
+            --success-border: rgba(34, 197, 94, 0.4);
+            --success-text: #4ade80;
+            --error-bg: rgba(239, 68, 68, 0.15);
+            --error-border: rgba(239, 68, 68, 0.4);
+            --error-text: #f87171;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            min-height: 100vh;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 650px;
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--card-border);
+            border-radius: 24px;
+            padding: 2.5rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 30px rgba(139, 92, 246, 0.15);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .avatar-badge {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .avatar-badge svg {
+            width: 32px;
+            height: 32px;
+            fill: white;
+        }
+
+        .header h1 {
+            font-size: 1.85rem;
+            font-weight: 700;
+            background: linear-gradient(to right, #ffffff, #cbd5e1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .alert {
+            padding: 1.25rem;
+            border-radius: 14px;
+            margin-bottom: 1.75rem;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+
+        .alert-success {
+            background: var(--success-bg);
+            border: 1px solid var(--success-border);
+            color: var(--success-text);
+        }
+
+        .alert-error {
+            background: var(--error-bg);
+            border: 1px solid var(--error-border);
+            color: var(--error-text);
+        }
+
+        .form-group {
+            margin-bottom: 1.4rem;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #e2e8f0;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-label .optional {
+            color: var(--text-muted);
+            font-weight: 400;
+            font-size: 0.8rem;
+            margin-left: 0.3rem;
+        }
+
+        .form-control {
+            width: 100%;
+            background: var(--input-bg);
+            border: 1px solid var(--input-border);
+            border-radius: 12px;
+            padding: 0.85rem 1rem;
+            color: var(--text-main);
+            font-size: 0.95rem;
+            transition: all 0.25s ease;
+            outline: none;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+            background: rgba(15, 23, 42, 0.85);
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .file-upload-wrapper {
+            position: relative;
+            background: var(--input-bg);
+            border: 2px dashed var(--input-border);
+            border-radius: 12px;
+            padding: 1.25rem;
+            text-align: center;
+            transition: all 0.25s ease;
+            cursor: pointer;
+        }
+
+        .file-upload-wrapper:hover {
+            border-color: var(--primary);
+            background: rgba(15, 23, 42, 0.8);
+        }
+
+        .file-upload-wrapper input[type="file"] {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .file-upload-text {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        .file-upload-text span {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* Star Rating Widget */
+        .star-rating-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.4rem;
+        }
+
+        .star-rating-btn {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            outline: none;
+            transition: transform 0.2s ease;
+        }
+
+        .star-rating-btn:hover {
+            transform: scale(1.25);
+        }
+
+        .star-icon {
+            width: 28px;
+            height: 28px;
+            fill: #475569;
+            transition: fill 0.2s ease;
+        }
+
+        .star-icon.active {
+            fill: #f59e0b;
+        }
+
+        .star-rating-text {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-left: 0.5rem;
+            font-weight: 500;
+        }
+
+        /* Image Preview Box */
+        .image-preview-container {
+            display: none;
+            margin-top: 1rem;
+            align-items: center;
+            gap: 1.25rem;
+            background: rgba(15, 23, 42, 0.85);
+            padding: 1rem 1.25rem;
+            border-radius: 16px;
+            border: 1px solid var(--primary);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .image-preview-img {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--accent-glow);
+            box-shadow: 0 0 15px rgba(139, 92, 246, 0.5);
+            flex-shrink: 0;
+        }
+
+        .image-preview-info {
+            flex-grow: 1;
+            text-align: left;
+            overflow: hidden;
+        }
+
+        .image-preview-filename {
+            font-size: 0.95rem;
+            color: #f1f5f9;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .image-preview-filesize {
+            font-size: 0.8rem;
+            color: var(--success-text);
+            margin-top: 0.2rem;
+            display: block;
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: linear-gradient(135deg, var(--primary), var(--accent-glow));
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 1rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px -5px rgba(99, 102, 241, 0.4);
+            margin-top: 0.5rem;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 25px -5px rgba(99, 102, 241, 0.5);
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+        }
+
+        .footer-text {
+            text-align: center;
+            margin-top: 1.5rem;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 1.5rem;
+            }
+            .header h1 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="avatar-badge">
+                <svg viewBox="0 0 24 24">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                </svg>
+            </div>
+            <h1>Share Your Feedback</h1>
+            <p>Thank you for working with me! Your comments help shape my craft and inspire future projects.</p>
+        </div>
+
+        {% if success_message %}
+            <div class="alert alert-success">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                </svg>
+                <div>
+                    <strong>Thank you!</strong> {{ success_message }}
+                </div>
+            </div>
+        {% endif %}
+
+        {% if error_message %}
+            <div class="alert alert-error">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+                </svg>
+                <div>
+                    <strong>Oops!</strong> {{ error_message }}
+                </div>
+            </div>
+        {% endif %}
+
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label class="form-label" for="name">Your Name *</label>
+                <input type="text" id="name" name="name" class="form-control" placeholder="e.g. Sarah Jenkins" required value="{{ request.POST.name|default:'' }}">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="title">Title or Role / Company *</label>
+                <input type="text" id="title" name="title" class="form-control" placeholder="e.g. CEO at TechCorp / Lead Designer" required value="{{ request.POST.title|default:'' }}">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="email">Email Address <span class="optional">(Optional - to receive a thank you note)</span></label>
+                <input type="email" id="email" name="email" class="form-control" placeholder="e.g. sarah@example.com" value="{{ request.POST.email|default:'' }}">
+            </div>
+
+            <!-- Star Rating Selection -->
+            <div class="form-group">
+                <label class="form-label">Overall Experience Rating *</label>
+                <div class="star-rating-wrapper" id="star-rating">
+                    <input type="hidden" id="rating-input" name="rating" value="5">
+                    <button type="button" class="star-rating-btn" onclick="setRating(1)" onmouseenter="highlightStars(1)" onmouseleave="resetStars()">
+                        <svg class="star-icon active" data-star="1" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                    </button>
+                    <button type="button" class="star-rating-btn" onclick="setRating(2)" onmouseenter="highlightStars(2)" onmouseleave="resetStars()">
+                        <svg class="star-icon active" data-star="2" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                    </button>
+                    <button type="button" class="star-rating-btn" onclick="setRating(3)" onmouseenter="highlightStars(3)" onmouseleave="resetStars()">
+                        <svg class="star-icon active" data-star="3" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                    </button>
+                    <button type="button" class="star-rating-btn" onclick="setRating(4)" onmouseenter="highlightStars(4)" onmouseleave="resetStars()">
+                        <svg class="star-icon active" data-star="4" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                    </button>
+                    <button type="button" class="star-rating-btn" onclick="setRating(5)" onmouseenter="highlightStars(5)" onmouseleave="resetStars()">
+                        <svg class="star-icon active" data-star="5" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                    </button>
+                    <span class="star-rating-text" id="rating-text">5.0 / 5 Stars (Excellent)</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="image">Profile Photo <span class="optional">(Optional)</span></label>
+                <div class="file-upload-wrapper">
+                    <input type="file" id="image" name="image" accept="image/*" onchange="updateFileName(this)">
+                    <div class="file-upload-text" id="file-label">
+                        <span>Click to browse</span> or drag & drop your headshot image
+                    </div>
+                </div>
+
+                <!-- Instant Image Preview Box -->
+                <div class="image-preview-container" id="image-preview-container">
+                    <img id="image-preview-img" class="image-preview-img" src="" alt="Photo Preview">
+                    <div class="image-preview-info">
+                        <div class="image-preview-filename" id="image-preview-filename"></div>
+                        <span class="image-preview-filesize" id="image-preview-filesize"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="comment">Your Feedback / Testimonial *</label>
+                <textarea id="comment" name="comment" class="form-control" placeholder="Describe your experience working with Issah Abdulsalim Boresa..." required>{{ request.POST.comment|default:'' }}</textarea>
+            </div>
+
+            <button type="submit" class="submit-btn">Submit Feedback</button>
+        </form>
+
+        <div class="footer-text">
+            &copy; 2026 Issah Abdulsalim Boresa &bull; Full-Stack & AI Developer
+        </div>
+    </div>
+
+    <script>
+        let currentRating = 5;
+        const ratingLabels = {
+            1: "1.0 / 5 Stars (Poor)",
+            2: "2.0 / 5 Stars (Fair)",
+            3: "3.0 / 5 Stars (Good)",
+            4: "4.0 / 5 Stars (Very Good)",
+            5: "5.0 / 5 Stars (Excellent)"
+        };
+
+        function setRating(val) {
+            currentRating = val;
+            document.getElementById('rating-input').value = val;
+            highlightStars(val);
+        }
+
+        function highlightStars(val) {
+            document.querySelectorAll('.star-icon').forEach(star => {
+                const starVal = parseInt(star.getAttribute('data-star'));
+                if (starVal <= val) {
+                    star.classList.add('active');
+                } else {
+                    star.classList.remove('active');
+                }
+            });
+            document.getElementById('rating-text').textContent = ratingLabels[val] || (val + ' Stars');
+        }
+
+        function resetStars() {
+            highlightStars(currentRating);
+        }
+
+        function updateFileName(input) {
+            const label = document.getElementById('file-label');
+            const previewContainer = document.getElementById('image-preview-container');
+            const previewImg = document.getElementById('image-preview-img');
+            const previewFileName = document.getElementById('image-preview-filename');
+            const previewFileSize = document.getElementById('image-preview-filesize');
+
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                label.innerHTML = 'Selected: <span>' + file.name + '</span>';
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewImg.src = e.target.result;
+                    previewFileName.textContent = file.name;
+                    const sizeInKb = (file.size / 1024).toFixed(1);
+                    previewFileSize.textContent = '✓ Ready to upload (' + sizeInKb + ' KB)';
+                    previewContainer.style.display = 'flex';
+                };
+                reader.readAsDataURL(file);
+            } else {
+                previewContainer.style.display = 'none';
+                label.innerHTML = '<span>Click to browse</span> or drag & drop your headshot image';
+            }
+        }
+    </script>
+</body>
+</html>

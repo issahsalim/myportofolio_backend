@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import PersonalInfo, Skill, Project, ContactMessage
+from .models import PersonalInfo, Skill, Project, ContactMessage, Testimonial
 
 @admin.register(PersonalInfo)
 class PersonalInfoAdmin(admin.ModelAdmin):
@@ -32,3 +32,23 @@ class ContactMessageAdmin(admin.ModelAdmin):
     def has_add_permission(self, request):
         # Messages should only come from frontend form submissions
         return False
+
+@admin.register(Testimonial)
+class TestimonialAdmin(admin.ModelAdmin):
+    list_display = ('name', 'title', 'email', 'rating', 'is_approved', 'created_at')
+    list_editable = ('is_approved',)
+    list_filter = ('rating', 'is_approved', 'created_at')
+    search_fields = ('name', 'title', 'email', 'comment')
+    actions = ['approve_testimonials', 'unapprove_testimonials']
+
+
+    @admin.action(description="Approve selected testimonials for frontend display")
+    def approve_testimonials(self, request, queryset):
+        updated = queryset.update(is_approved=True)
+        self.message_user(request, f"{updated} testimonial(s) successfully approved.")
+
+    @admin.action(description="Unapprove selected testimonials")
+    def unapprove_testimonials(self, request, queryset):
+        updated = queryset.update(is_approved=False)
+        self.message_user(request, f"{updated} testimonial(s) unapproved.")
+

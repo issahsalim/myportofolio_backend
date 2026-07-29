@@ -65,3 +65,23 @@ class ContactMessage(models.Model):
 
     def __str__(self):
         return f"Message from {self.name} - {self.subject}"
+
+
+class Testimonial(models.Model):
+    name = models.CharField(max_length=100)
+    title = models.CharField(max_length=150, help_text="e.g. CEO at TechCorp, Senior Developer, Client")
+    email = models.EmailField(blank=True, null=True, help_text="Optional: Used to send automatic thank-you note")
+    image = models.ImageField(upload_to='testimonials/', blank=True, null=True)
+    rating = models.IntegerField(default=5, help_text="Rating from 1 to 5 stars", db_index=True)
+    comment = models.TextField()
+    is_approved = models.BooleanField(default=False, db_index=True, help_text="Approve to display on frontend")
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        status = "Approved" if self.is_approved else "Pending Approval"
+        return f"Testimonial from {self.name} ({self.title}) - [{self.rating}★] - [{status}]"
+
+
