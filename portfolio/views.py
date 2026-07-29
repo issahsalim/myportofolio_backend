@@ -25,13 +25,13 @@ def _send_contact_emails_async(instance):
         client_subject = f"Message Received | Issah Abdulsalim Boresa"
         client_body = (
             f"Dear {instance.name},\n\n"
-            f"Thank you for reaching out to me through my portfolio website!\n\n"
+            f"Thank you for reaching out to me \n\n"
             f"I have received your message regarding \"{instance.subject or 'your inquiry'}\". "
             f"I appreciate you taking the time to get in touch, and I will review your message and get back to you shortly.\n\n"
             f"If you have any urgent details to share, feel free to reply directly to this email or reach out via phone/WhatsApp at (059) 6878044.\n\n"
             f"Warm regards,\n\n"
             f"Issah Abdulsalim Boresa\n"
-            f"Full-Stack & Machine Learning Developer\n"
+            f"Technology Optimist\n"
             f"Email: issahsalim233@gmail.com | issah.boresa.stu@uenr.edu.gh\n"
             f"Phone: (059) 6878044\n"
         )
@@ -78,11 +78,11 @@ def _send_testimonial_emails_async(instance):
             client_body = (
                 f"Dear {instance.name},\n\n"
                 f"Thank you so much for taking the time to share your feedback and testimonial about our work together!\n\n"
-                f"Your words and support mean a lot to me. Your feedback has been received and will be reviewed shortly before featuring on my portfolio website.\n\n"
+                f"Your words and support mean a lot to me. Your feedback has been received and will be reviewed shortly. \n\n"
                 f"I truly enjoyed collaborating with you and look forward to working together again in the future!\n\n"
                 f"Warm regards,\n\n"
                 f"Issah Abdulsalim Boresa\n"
-                f"Full-Stack & Machine Learning Developer\n"
+                f"Technology Optimist\n"
                 f"Email: issahsalim233@gmail.com | issah.boresa.stu@uenr.edu.gh\n"
                 f"Phone: (059) 6878044\n"
             )
