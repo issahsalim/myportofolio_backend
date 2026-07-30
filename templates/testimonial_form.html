@@ -56,6 +56,38 @@
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 30px rgba(139, 92, 246, 0.15);
         }
 
+        /* Top Bar with External Link Button */
+        .top-nav-bar {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            margin-bottom: 1rem;
+        }
+
+        .portfolio-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(99, 102, 241, 0.15);
+            border: 1px solid rgba(99, 102, 241, 0.35);
+            color: #a5b4fc;
+            padding: 0.55rem 1.1rem;
+            border-radius: 9999px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.25s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .portfolio-btn:hover {
+            background: rgba(99, 102, 241, 0.3);
+            border-color: #8b5cf6;
+            color: #ffffff;
+            transform: translateY(-1.5px);
+            box-shadow: 0 6px 18px rgba(99, 102, 241, 0.35);
+        }
+
         .header {
             text-align: center;
             margin-bottom: 2rem;
@@ -128,6 +160,34 @@
             background: var(--success-bg);
             border: 1px solid var(--success-border);
             color: var(--success-text);
+            flex-direction: column;
+        }
+
+        .alert-success-top {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+
+        .alert-action-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            margin-top: 0.85rem;
+            background: rgba(34, 197, 94, 0.2);
+            border: 1px solid rgba(34, 197, 94, 0.4);
+            color: #86efac;
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .alert-action-btn:hover {
+            background: rgba(34, 197, 94, 0.35);
+            color: #ffffff;
         }
 
         .alert-error {
@@ -212,6 +272,27 @@
         .file-upload-text span {
             color: var(--primary);
             font-weight: 600;
+        }
+
+        /* Photo Friendly Note Box */
+        .photo-note-box {
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.25);
+            border-radius: 12px;
+            padding: 0.75rem 1rem;
+            margin-top: 0.6rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.6rem;
+            color: #cbd5e1;
+            font-size: 0.825rem;
+            line-height: 1.45;
+        }
+
+        .photo-note-box svg {
+            flex-shrink: 0;
+            color: var(--primary);
+            margin-top: 0.15rem;
         }
 
         /* Star Rating Widget */
@@ -361,6 +442,14 @@
 </head>
 <body>
     <div class="container">
+        <!-- Top Bar Button to Main Portfolio Website -->
+        <div class="top-nav-bar">
+            <a href="https://boresa.netlify.app/" target="_blank" rel="noopener noreferrer" class="portfolio-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                <span>Read more about me</span>
+            </a>
+        </div>
+
         <div class="header">
             <div class="profile-avatar-wrapper">
                 {% if personal_info and personal_info.profile_image %}
@@ -378,12 +467,18 @@
 
         {% if success_message %}
             <div class="alert alert-success">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-                </svg>
-                <div>
-                    <strong>Thank you!</strong> {{ success_message }}
+                <div class="alert-success-top">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                    <div>
+                        <strong>Thank you!</strong> {{ success_message }}
+                    </div>
                 </div>
+                <a href="https://boresa.netlify.app/" target="_blank" rel="noopener noreferrer" class="alert-action-btn">
+                    <span>Read more about me</span>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                </a> 
             </div>
         {% endif %}
 
@@ -447,6 +542,12 @@
                     <div class="file-upload-text" id="file-label">
                         <span>Click to browse</span> or drag & drop your headshot image
                     </div>
+                </div>
+
+                <!-- Friendly Photo Note Box -->
+                <div class="photo-note-box">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+                    <span>I will be very happy if you include your photo, but I am completely fine if you leave it empty your feedback alone means a lot to me! 😊</span>
                 </div>
 
                 <!-- Instant Image Preview Box -->

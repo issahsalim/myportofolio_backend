@@ -1,7 +1,7 @@
 import logging
 import threading
 from django.shortcuts import render
-from django.core.mail import send_mail
+from django.core.mail import get_connection, EmailMessage
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
@@ -19,23 +19,40 @@ from .serializers import (
 logger = logging.getLogger(__name__)
 
 def _send_contact_emails_async(instance):
-
+    """
+    Dispatches automated confirmation email to the contact sender
+    and a notification email to Issah over a single persistent SMTP connection.
+    """
     try:
-        # 1. Confirmation email to client 
-        client_subject = f"Message Received | Issah Abdulsalim Boresa"
-        client_body = (
-            f"Dear {instance.name},\n\n"
-            f"Thank you for reaching out to me \n\n"
-            f"I have received your message regarding \"{instance.subject or 'your inquiry'}\". "
-            f"I appreciate you taking the time to get in touch, and I will review your message and get back to you shortly.\n\n"
-            f"If you have any urgent details to share, feel free to reply directly to this email or reach out via phone/WhatsApp at (059) 6878044.\n\n"
-            f"Warm regards,\n\n"
-            f"Issah Abdulsalim Boresa\n"
-            f"Technology Optimist\n"
-            f"Email: issahsalim233@gmail.com | issah.boresa.stu@uenr.edu.gh\n"
-            f"Phone: (059) 6878044\n"
-        )
-        
+        connection = get_connection(fail_silently=False)
+        connection.open()
+
+        messages = []
+
+        # 1. Confirmation email to client if email provided
+        if instance.email:
+            client_subject = f"Message Received | Issah Abdulsalim Boresa"
+            client_body = (
+                f"Dear {instance.name},\n\n"
+                f"Thank you for reaching out to me through my portfolio website!\n\n"
+                f"I have received your message regarding \"{instance.subject or 'your inquiry'}\". "
+                f"I appreciate you taking the time to get in touch, and I will review your message and get back to you shortly.\n\n"
+                f"If you have any urgent details to share, feel free to reply directly to this email or reach out via phone/WhatsApp at (059) 6878044.\n\n"
+                f"Warm regards,\n\n"
+                f"Issah Abdulsalim Boresa\n"
+                f"Technology Optimist\n"
+                f"Email: issahsalim233@gmail.com | issah.boresa.stu@uenr.edu.gh\n"
+                f"Phone: (059) 6878044\n"
+            )
+            client_msg = EmailMessage(
+                subject=client_subject,
+                body=client_body,
+                from_email=f"Issah Abdulsalim Boresa <{settings.DEFAULT_FROM_EMAIL}>",
+                to=[instance.email],
+                connection=connection,
+            )
+            messages.append(client_msg)
+
         # 2. Notification email to Issah
         admin_subject = f"🔔 New Portfolio Message from {instance.name}"
         admin_body = (
@@ -44,56 +61,57 @@ def _send_contact_emails_async(instance):
             f"Subject: {instance.subject or 'N/A'}\n\n"
             f"Message:\n{instance.message}\n"
         )
-
-        # Send client confirmation
-        send_mail(
-            subject=client_subject,
-            message=client_body,
-            from_email=settings.DEFAULT_FROM_EMAIL,
-            recipient_list=[instance.email],
-            fail_silently=True,
-        )
-
-        # Send admin notification
-        send_mail(
+        admin_msg = EmailMessage(
             subject=admin_subject,
-            message=admin_body,
+            body=admin_body,
             from_email=settings.DEFAULT_FROM_EMAIL,
-            recipient_list=['issahsalim233@gmail.com'],
-            fail_silently=True,
+            to=['issahsalim233@gmail.com'],
+            connection=connection,
         )
+        messages.append(admin_msg)
+
+        # Send all emails in a single persistent SMTP session
+        if messages:
+            connection.send_messages(messages)
+
+        connection.close()
     except Exception as e:
-        logger.error(f"Failed to dispatch contact email asynchronously: {e}")
+        logger.error(f"Failed to dispatch contact emails asynchronously: {e}", exc_info=True)
 
 
 def _send_testimonial_emails_async(instance):
     """
     Sends automated professional & friendly thank-you email to the client (if email provided)
-    and notifies admin about the new testimonial submission.
+    and notifies admin about the new testimonial submission over a single persistent SMTP connection.
     """
     try:
+        connection = get_connection(fail_silently=False)
+        connection.open()
+
+        messages = []
+
         # 1. Thank-you email to client if email was provided
         if instance.email:
             client_subject = "Thank You for Your Feedback! | Issah Abdulsalim Boresa"
             client_body = (
                 f"Dear {instance.name},\n\n"
                 f"Thank you so much for taking the time to share your feedback and testimonial about our work together!\n\n"
-                f"Your words and support mean a lot to me. Your feedback has been received and will be reviewed shortly. \n\n"
+                f"Your words and support mean a lot to me. Your feedback has been received and will be reviewed shortly before featuring on my portfolio website.\n\n"
                 f"I truly enjoyed collaborating with you and look forward to working together again in the future!\n\n"
                 f"Warm regards,\n\n"
                 f"Issah Abdulsalim Boresa\n"
-                f"Technology Optimist\n"
+                f"Full-Stack & Machine Learning Developer\n"
                 f"Email: issahsalim233@gmail.com | issah.boresa.stu@uenr.edu.gh\n"
                 f"Phone: (059) 6878044\n"
             )
-
-            send_mail(
+            client_msg = EmailMessage(
                 subject=client_subject,
-                message=client_body,
-                from_email=settings.DEFAULT_FROM_EMAIL,
-                recipient_list=[instance.email],
-                fail_silently=True,
+                body=client_body,
+                from_email=f"Issah Abdulsalim Boresa <{settings.DEFAULT_FROM_EMAIL}>",
+                to=[instance.email],
+                connection=connection,
             )
+            messages.append(client_msg)
 
         # 2. Notification email to Admin
         admin_subject = f"⭐ New Testimonial Submitted by {instance.name}"
@@ -101,21 +119,29 @@ def _send_testimonial_emails_async(instance):
             f"You received a new client testimonial!\n\n"
             f"Name: {instance.name}\n"
             f"Title/Role: {instance.title}\n"
+            f"Rating: {instance.rating} Stars\n"
             f"Email: {instance.email or 'Not provided'}\n\n"
             f"Comment:\n{instance.comment}\n\n"
             f"Status: Pending Approval\n"
             f"Log into Django Admin to approve this testimonial for frontend display.\n"
         )
-
-        send_mail(
+        admin_msg = EmailMessage(
             subject=admin_subject,
-            message=admin_body,
+            body=admin_body,
             from_email=settings.DEFAULT_FROM_EMAIL,
-            recipient_list=['issahsalim233@gmail.com'],
-            fail_silently=True,
+            to=['issahsalim233@gmail.com'],
+            connection=connection,
         )
+        messages.append(admin_msg)
+
+        # Send all emails in a single persistent SMTP session
+        if messages:
+            connection.send_messages(messages)
+
+        connection.close()
     except Exception as e:
-        logger.error(f"Failed to dispatch testimonial email asynchronously: {e}")
+        logger.error(f"Failed to dispatch testimonial emails asynchronously: {e}", exc_info=True)
+
 
 
 def submit_testimonial_view(request):
@@ -161,7 +187,7 @@ def submit_testimonial_view(request):
             ).start()
 
             context['is_success'] = True
-            context['success_message'] = "Your feedback has been submitted successfully and is pending review. Thank you for your support!"
+            context['success_message'] = "Your feedback has been submitted successfully. Thank you for your support!"
 
     return render(request, 'testimonial_form.html', context)
 
@@ -218,7 +244,8 @@ class ContactMessageViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
     Allows guest users to post message submissions.
     Bypasses CSRF checking and dispatches emails asynchronously in background thread so HTTP response returns instantly.
     Time Complexity: O(1) for database insert.
-    """
+    """ 
+
     queryset = ContactMessage.objects.all()
     serializer_class = ContactMessageSerializer
     permission_classes = [permissions.AllowAny]
