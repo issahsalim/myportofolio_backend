@@ -183,7 +183,7 @@ def submit_testimonial_view(request):
             threading.Thread(
                 target=_send_testimonial_emails_async,
                 args=(testimonial,),
-                daemon=True
+                daemon=False
             ).start()
 
             context['is_success'] = True
@@ -269,8 +269,9 @@ class ContactMessageViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
 
     def perform_create(self, serializer):
         instance = serializer.save()
-        # Non-blocking async email dispatch thread
-        threading.Thread(target=_send_contact_emails_async, args=(instance,), daemon=True).start()
+        # Non-blocking email dispatch thread (daemon=False ensures Gunicorn does not kill thread on production WSGI exit)
+        threading.Thread(target=_send_contact_emails_async, args=(instance,), daemon=False).start()
+
 
 
 
