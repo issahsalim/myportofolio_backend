@@ -24,7 +24,7 @@ def _send_contact_emails_async(instance):
     and a notification email to Issah over a single persistent SMTP connection.
     """
     try:
-        connection = get_connection(fail_silently=False)
+        connection = get_connection(fail_silently=False, timeout=15)
         connection.open()
 
         messages = []
@@ -85,7 +85,7 @@ def _send_testimonial_emails_async(instance):
     and notifies admin about the new testimonial submission over a single persistent SMTP connection.
     """
     try:
-        connection = get_connection(fail_silently=False)
+        connection = get_connection(fail_silently=False, timeout=15)
         connection.open()
 
         messages = []
