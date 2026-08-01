@@ -11,7 +11,7 @@ handler404 = custom_404_view
 urlpatterns = [
     path('', home_view, name='home'),
     path('submit-feedback/', submit_testimonial_view, name='submit-testimonial'),
-    path('admin/', admin.site.urls),
+    path('hawa/', admin.site.urls),
     path('api/', include('portfolio.urls')),
 ]
 
